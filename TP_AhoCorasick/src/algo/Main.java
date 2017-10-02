@@ -53,17 +53,17 @@ public class Main {
 	/***
 	 * Renvoie une liste de tous les caracteres presents dans la liste des evennements passe en parametre 
 	 * 
-	 * @param events
+	 * @param keyWords
 	 * @return
 	 */
-	private static ArrayList<Character> calculNbLettres(List<String> events) {
+	private static ArrayList<Character> calculNbLettres(List<String> keyWords) {
 		ArrayList<Character> listCharUsed = new ArrayList<Character>();
 		
-		for(int i = 0; i < events.size(); i++) {
-			for(int j = 0; j < events.get(i).length(); j++) {
-				if(listCharUsed.contains(events.get(i).charAt(j))) continue;
+		for(int i = 0; i < keyWords.size(); i++) {
+			for(int j = 0; j < keyWords.get(i).length(); j++) {
+				if(listCharUsed.contains(keyWords.get(i).charAt(j))) continue;
 				
-				listCharUsed.add(events.get(i).charAt(j));
+				listCharUsed.add(keyWords.get(i).charAt(j));
 			}	
 		}
 		return listCharUsed;
@@ -88,31 +88,6 @@ public class Main {
 		return maxLength;
 	}
 	
-	@SuppressWarnings("unused")
-	private static void alphaTri(char[][] matrice) {
-		for(int i = 0; i < matrice.length - 1; i++) {
-			for(int j = 0; j < matrice[i].length; j++) {
-				if((int)matrice[i][j] > (int)matrice[i+1][j]) {
-					echangeLigne(matrice, i);
-					break;
-				}
-			}
-		}
-	}
-	
-	/**
-	 * echange la ligne d'une matrice avec la suivante
-	 * 
-	 * @param matrice
-	 * @param numLigne
-	 */
-	private static void echangeLigne(char matrice[][], int numLigne) {
-		char[] val = matrice[numLigne];
-		
-		matrice[numLigne] = matrice[numLigne+1];
-		matrice[numLigne+1] = val;
-	}
-	
 	/**
 	 * Creer et renvoie la table des echecs
 	 * 
@@ -134,22 +109,6 @@ public class Main {
 				}
 			}
 		}
-		
-		/*
-		for(int i = 0; i < events.size(); i++) { 
-			if(events.get(i).length() > 2) {
-				for(int j = i; j >= 0; j--) {
-					System.out.println("i : " + events.get(i) + " j : " + events.get(j));
-					if(events.get(i).endsWith(events.get(j)) &&
-							events.get(i).length() > events.get(j).length()) {
-						defeatTable[i+1] = j+1;
-						System.out.println("DT2 : " + (j+1));
-					}
-				}
-			}
-		}
-		*/
-		
 		return defeatTable;
 	} //createDefeatTable()
 	
@@ -168,120 +127,53 @@ public class Main {
 		String text = texte.toUpperCase();
 		for(int i = 0; i < keyWords.size(); i++)
 			keyWords.set(i, keyWords.get(i).toUpperCase());
-		System.out.println(keyWords);
 		
 		eventPosition = 0;
 		count = 0;
 		List<String> events = getListEvents(keyWords);
-		List<Character> charsList = calculNbLettres(events);
+		List<Character> charsList = calculNbLettres(keyWords);
 		
 		int[][] commandBoard = createCommandBoard(events, charsList);
 		
 		int[] defeatTable = createDefeatTable(commandBoard, events);
 		
+		
+		//Ici on commence le parcourt du texte tout en avan�ant dans la table de commande
 		for(index = 0; index < text.length(); index++) {
 			if(charsList.indexOf(text.charAt(index)) > -1)
 			{	
-				/*eventPosition = commandBoard[charsList.indexOf(text.charAt(index))][eventPosition]; 
-				int j = index+1;
-				while(j < text.length() && eventPosition != 0) {
-					if(charsList.indexOf(text.charAt(j)) < 0) break;
-					eventPosition = commandBoard[charsList.indexOf(text.charAt(j))][eventPosition]; 
-					System.out.println("" + text.charAt(j) + eventPosition);
-					String currentEvent; 
-					if(eventPosition > 0 && keyWords.contains(currentEvent = events.get(eventPosition - 1))) {
-						if(listKeyWordsIndex.get(currentEvent) == null)
-							listKeyWordsIndex.put(currentEvent, new ArrayList<int[]>());
-						listKeyWordsIndex.get(currentEvent).add(new int[2]);
-						listKeyWordsIndex.get(currentEvent).get(listKeyWordsIndex.get(currentEvent).size()-1)[0] = j-currentEvent.length()+1;
-						listKeyWordsIndex.get(currentEvent).get(listKeyWordsIndex.get(currentEvent).size()-1)[1] = j;
-						count++;
-					}
-					j++;
-				}*/
-		
-				
 				if(commandBoard[charsList.indexOf(text.charAt(index))][eventPosition] == 0)
 					eventPosition = goToDefeat(defeatTable, events, keyWords, listKeyWordsIndex);
 				eventPosition = commandBoard[charsList.indexOf(text.charAt(index))][eventPosition]; 
-				System.out.println("" + text.charAt(index) + eventPosition);
-				/*if(eventPosition > 0) {
-				String currentEvent = events.get(eventPosition - 1); 
-					for(int j = 0; j < currentEvent.length(); j++) {
-						String newCurrentEvent;
-						if(keyWords.contains(newCurrentEvent = currentEvent.substring(j))) {
-							System.out.println(newCurrentEvent);
-							if(listKeyWordsIndex.get(newCurrentEvent) == null)
-								listKeyWordsIndex.put(newCurrentEvent, new ArrayList<int[]>());
-							listKeyWordsIndex.get(newCurrentEvent).add(new int[2]);
-							listKeyWordsIndex.get(newCurrentEvent).get(listKeyWordsIndex.get(newCurrentEvent).size()-1)[0] = index-newCurrentEvent.length()+1;
-							listKeyWordsIndex.get(newCurrentEvent).get(listKeyWordsIndex.get(newCurrentEvent).size()-1)[1] = index;
-							System.out.println(listKeyWordsIndex);
-							count++;
-							
-						}
-					}					
-				}*/
 				String currentEvent;
 				if(eventPosition > 0 && keyWords.contains(currentEvent = events.get(eventPosition - 1))) {
-					System.out.println(currentEvent);
-					if(listKeyWordsIndex.get(currentEvent) == null)
-						listKeyWordsIndex.put(currentEvent, new ArrayList<int[]>());
-					listKeyWordsIndex.get(currentEvent).add(new int[2]);
-					listKeyWordsIndex.get(currentEvent).get(listKeyWordsIndex.get(currentEvent).size()-1)[0] = index-currentEvent.length()+1;
-					listKeyWordsIndex.get(currentEvent).get(listKeyWordsIndex.get(currentEvent).size()-1)[1] = index;
-					count++;
-					
+					wordFound(currentEvent, listKeyWordsIndex);
 				}
 			}
 			else
 				eventPosition = goToDefeat(defeatTable, events, keyWords, listKeyWordsIndex);
 		}
 		
-		
-		
-		System.out.print("\t0");
-		for(String str : events)
-			System.out.print("\t" + str);
-		System.out.println();
-		
-		for(int i = 0; i < commandBoard.length; i++) {
-			System.out.print(charsList.get(i));
-			for(int j = 0; j < commandBoard[i].length; j++) {
-				System.out.print("\t" + commandBoard[i][j]);
-			}
-			System.out.println();
-		}
-		
-		for(int i = 0; i < defeatTable.length; i++)
-			System.out.println(" " + i + " : " + defeatTable[i]);
-		
-		/*int it = 0;
-		for(List<int[]> listIndex : listKeyWordsIndex.values()) {
-			for(int[] i : listIndex) {
-				System.out.println("i[0] = " + i[0] + " i[1] = " + i[1] + " texte = " + texte.length());
-				texteToReturn = texteToReturn.substring(0, i[0]+it) + '►' + texte.substring(i[0], i[1]+1) + texte.substring(i[1]+1, texte.length());
-				it++;
-			}
-		}*/
-		
 
+		
+		/*
+		 * Ici on ajoute tous les mot-clefs contenus dans ceux trouves
+		 */
 		List<String> listKeyWordsToAdd = new ArrayList<String>();
-		Map<String, List<int[]>> dub = new LinkedHashMap<String, List<int[]>>();
+		Map<String, List<int[]>> temporaryListKeyWordsIndex = new LinkedHashMap<String, List<int[]>>();
 		
 		for(String keyWordToFind : keyWords) {
 			if(listKeyWordsToAdd.contains(keyWordToFind)) continue;
 			for(String keyWord : listKeyWordsIndex.keySet()) {
 				if(keyWord.length() > keyWordToFind.length() && keyWord.contains(keyWordToFind)) {
 					
-					if(!dub.containsKey(keyWordToFind))
-						dub.put(keyWordToFind, new ArrayList<int[]>());
+					if(!temporaryListKeyWordsIndex.containsKey(keyWordToFind))
+						temporaryListKeyWordsIndex.put(keyWordToFind, new ArrayList<int[]>());
 					for(int[] occurence : listKeyWordsIndex.get(keyWord)) {
-						System.out.println(keyWordToFind);
 						int  newOccurence[] = new int[2];
 						newOccurence[0] = occurence[0]+keyWord.indexOf(keyWordToFind);
 						newOccurence[1] = newOccurence[0]+keyWordToFind.length();
-						dub.get(keyWordToFind).add(newOccurence);
+						temporaryListKeyWordsIndex.get(keyWordToFind).add(newOccurence);
 						count++;
 					}
 				}
@@ -289,18 +181,34 @@ public class Main {
 		}
 		
 		
-		for(String keyWord : dub.keySet()) {
+		for(String keyWord : temporaryListKeyWordsIndex.keySet()) {
 			if(!listKeyWordsIndex.containsKey(keyWord))
-				listKeyWordsIndex.put(keyWord, dub.get(keyWord));
+				listKeyWordsIndex.put(keyWord, temporaryListKeyWordsIndex.get(keyWord));
 			else
-				listKeyWordsIndex.get(keyWord).addAll(dub.get(keyWord));
+				listKeyWordsIndex.get(keyWord).addAll(temporaryListKeyWordsIndex.get(keyWord));
 		}
 		
 		return listKeyWordsIndex;
 	} //Search()
 	
 	/**
-	 * Fais les actions correspondantes en cas d'echec et renvoie la position que devrait avoir l'evenement après cela
+	 * Ajoute le mot trouve ainsi que l'occurence a la Map donnee
+	 * 
+	 * @param currentEvent
+	 * @param listKeyWordsIndex
+	 */
+	private static void wordFound(String currentEvent, Map<String, List<int[]>> listKeyWordsIndex) {
+		if(listKeyWordsIndex.get(currentEvent) == null)
+			listKeyWordsIndex.put(currentEvent, new ArrayList<int[]>());
+		listKeyWordsIndex.get(currentEvent).add(new int[2]);
+		listKeyWordsIndex.get(currentEvent).get(listKeyWordsIndex.get(currentEvent).size()-1)[0] = index-currentEvent.length()+1;
+		listKeyWordsIndex.get(currentEvent).get(listKeyWordsIndex.get(currentEvent).size()-1)[1] = index;
+		
+		count++;
+	}
+	
+	/**
+	 * Fais les actions correspondantes en cas d'echec et renvoie la position que devrait avoir l'evenement apres cela
 	 * 
 	 * @param defeatTable
 	 * @param events
@@ -308,27 +216,13 @@ public class Main {
 	 * @return
 	 */
 	public static int goToDefeat(int[] defeatTable, List<String> events, List<String> keyWords, Map<String, List<int[]>> listKeyWordsIndex) {
-		System.out.println("Defeat");
 		eventPosition = defeatTable[eventPosition];
 		String currentEvent;
+		// Si apres l'echec on tombe sur un mot-clef on l'ajoute :
 		if(eventPosition > 0 && keyWords.contains(currentEvent = events.get(eventPosition - 1))) {
-			System.out.println(currentEvent);			
-			/*
-			if(eventPosition == 0) {
-				eventPosition = goToDefeat(defeatTable, events, keyWords, listKeyWordsIndex);
-			    if(listKeyWordsIndex.get(currentEvent) == null)
-					listKeyWordsIndex.put(currentEvent, new ArrayList<int[]>());
-				listKeyWordsIndex.get(currentEvent).add(new int[2]);
-				listKeyWordsIndex.get(currentEvent).get(listKeyWordsIndex.get(currentEvent).size()-1)[0] = index - currentEvent.length()+1;
-				listKeyWordsIndex.get(currentEvent).get(listKeyWordsIndex.get(currentEvent).size()-1)[1] = index;
-				System.out.println(listKeyWordsIndex);
-
-				index  -= currentEvent.length();
-			}*/
-
-			
-			count++;
+			wordFound(currentEvent, listKeyWordsIndex);
 		}
+		
 		return eventPosition;
 	} //goToDefeat()
 	
@@ -366,65 +260,5 @@ public class Main {
 		
 		return commandBoard;
 	} //createCommandBoard()
-	
-
-	/**
-	 * Le main avec les tests
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
 		
-		ArrayList<String> keyWords = new ArrayList<String>();
-		keyWords.add("Chien");
-		keyWords.add("Chat");
-		keyWords.add("chein");
-		keyWords.add("hi");
-		//keyWords.add("TABLE");
-		//keyWords.add("AB");
-		
-		
-		
-		
-		/*keyWords.add("ANDES");
-		keyWords.add("ANE");
-		keyWords.add("ARTE");
-		keyWords.add("AS");
-		keyWords.add("CANE");
-		keyWords.add("CARTABLE");
-		keyWords.add("CARTE");
-		keyWords.add("RTT");
-		keyWords.add("TABLEAU");
-		keyWords.add("TENIR");
-		
-		
-		ArrayList<String> listeEvents = getListEvents(keyWords);
-		
-		int i = 1;
-		
-		for(String str : listeEvents) {
-			System.out.println(i + " : " + str); 
-			i++;
-		}
-			
-		ArrayList<Character> listechar = calculNbLettres(listeEvents);
-		
-		
-		int[][] commandBoard = createCommandBoard(listeEvents, listechar);
-		
-		int[] defeatTable = createDefeatTable(commandBoard, listeEvents);
-		
-		for(i = 0; i < defeatTable.length; i++)
-			System.out.println(" " + i + " : " + defeatTable[i]);
-		
-		*/
-		String texte = "Chat ChatchatCheinChien"; //"TABLEBLABLAN TABLAN";
-		
-	//	search(texte, keyWords);
-		
-		System.out.println(search(texte, keyWords));
-		System.out.println(texte);
-
-		System.out.println("count : " + count);
-	}
 }

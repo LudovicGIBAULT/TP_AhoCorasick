@@ -20,7 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.SoftBevelBorder;
 
-import listener.AddKeyWordListener;
+import listeners.AddKeyWordListener;
 
 /**
  * Fenetre Permettant la gestion des mots-clefs
@@ -96,12 +96,10 @@ public class FrameKeyWords extends JPanel {
 	}
 	
 	public List<String> getKeyWords() {
-		System.out.println(keyWords);
 		return keyWords;
 	}
 	
 	public void addKeyWordToPanel(String str) {
-		System.out.println("str : " + str);
 		final JPanel panelKeyWord = new JPanel();
 
 		final JLabel keyWord = new JLabel(str);

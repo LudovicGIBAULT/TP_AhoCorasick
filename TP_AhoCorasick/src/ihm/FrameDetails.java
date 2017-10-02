@@ -53,9 +53,9 @@ public class FrameDetails extends JFrame{
 			JScrollPane scroll2 = new JScrollPane(keyWordPanel);
 			scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 			scroll2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-			scroll2.setPreferredSize(new Dimension(400, 200));
+			scroll2.setPreferredSize(new Dimension(400, 50));
 			detailsPanel.add(scroll2);
-			keyWordPanel.setBorder(BorderFactory.createTitledBorder(keyWord));	
+			keyWordPanel.setBorder(BorderFactory.createTitledBorder(keyWord + " : " + listKeyWordsIndex.get(keyWord).size()));	
 			for(int[] i : listKeyWordsIndex.get(keyWord)) {
 					keyWordPanel.add(new JLabel("" + i[0]));
 			}

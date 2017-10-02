@@ -37,7 +37,7 @@ import algo.Main;
  * @author Ludovic GIBAULT et Jean-Baptiste BRUN
  *
  */
-public class IHM extends JFrame {
+public class MainFrame extends JFrame {
 	
 	/**
 	 * Liste des mot-clefs
@@ -60,8 +60,8 @@ public class IHM extends JFrame {
 	/**
 	 * constructeur de l'IHM
 	 */
-	public IHM() {
-		super();
+	public MainFrame() {
+		super("Algorithme de recherche : Aho Corasick");
 		
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -95,25 +95,11 @@ public class IHM extends JFrame {
 					}
 				});
 				
-				int it = 0;
-				
-				System.out.println(listOccurences);
-				
+				int it = 0;								
 				for(int occurence : listOccurences) {
 						texteToReturn = texteToReturn.substring(0, occurence+it) + '►' + textToSearchPanel.getText().substring(occurence);
 						it++;
 				}
-				
-				/*
-				int it = 0;
-				for(List<int[]> listIndex : listKeyWordsIndex.values()) {
-					for(int[] i : listIndex) {
-						System.out.println("i[0] = " + i[0] + " i[1] = " + i[1] + " texte = " + textToSearchPanel.getText().length());
-						texteToReturn = texteToReturn.substring(0, i[0]+it) + 'â–º' + textToSearchPanel.getText().substring(i[0], i[1]+1)
-								        + textToSearchPanel.getText().substring(i[1]+1, textToSearchPanel.getText().length());
-						it++;
-					}
-				}*/
 				
 				textResultPanel.setText(texteToReturn);		
 			}
@@ -217,6 +203,6 @@ public class IHM extends JFrame {
 	} //IHM()
 	
 	public static void main(String[] args) {
-		new IHM();
+		new MainFrame();
 	}
 }
