@@ -2,7 +2,6 @@ package ihm;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
 
