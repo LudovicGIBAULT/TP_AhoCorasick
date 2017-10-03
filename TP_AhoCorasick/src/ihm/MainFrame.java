@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +55,7 @@ public class MainFrame extends JFrame {
 	/**
 	 * Map de toutes les occurences trouves par mot-clef
 	 */
-	private Map<String, List<int[]>> listKeyWordsIndex = new LinkedHashMap<String, List<int[]>>();
+	private Map<String, List<int[]>> temporaryMapKeyWordsOccurences = new HashMap<String, List<int[]>>();
 	
 	/**
 	 * constructeur de l'IHM
@@ -76,13 +76,13 @@ public class MainFrame extends JFrame {
 
 			public void actionPerformed(ActionEvent arg0) {
 
-				listKeyWordsIndex = Main.search(textToSearchPanel.getText(), keyWords);
+				temporaryMapKeyWordsOccurences = Main.search(textToSearchPanel.getText(), keyWords);
 
 				String texteToReturn = textToSearchPanel.getText();
 				
 				List<Integer> listOccurences = new ArrayList<Integer>();
 				
-				for(List<int[]> listIndex : listKeyWordsIndex.values()) {
+				for(List<int[]> listIndex : temporaryMapKeyWordsOccurences.values()) {
 					for(int[] i : listIndex) {
 						listOccurences.add(i[0]);
 					}
@@ -168,7 +168,7 @@ public class MainFrame extends JFrame {
 						 while ((str = br.readLine()) != null) {
 							 	text += "\n" + str;
 					         }
-						 textToSearchPanel.setText(text);
+						 textToSearchPanel.setText(text.substring(1));
 						 
 					} catch (FileNotFoundException e1) {
 						JOptionPane.showMessageDialog(null, "Fichier inexistant", "ERREUR", JOptionPane.ERROR_MESSAGE);
@@ -193,7 +193,7 @@ public class MainFrame extends JFrame {
         detailsButton.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				new FrameDetails(listKeyWordsIndex);
+				new FrameDetails(temporaryMapKeyWordsOccurences);
 				
 			}
 		});

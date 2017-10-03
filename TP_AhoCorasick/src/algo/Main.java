@@ -2,13 +2,8 @@ package algo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 
 public class Main {
@@ -123,7 +118,7 @@ public class Main {
 	public static Map<String, List<int[]>> search(String texte, List<String> keyWords) {
 		
 
-		Map<String, List<int[]>> listKeyWordsIndex = new LinkedHashMap<String, List<int[]>>();
+		Map<String, List<int[]>> mapKeyWordsOccurences = new HashMap<String, List<int[]>>();
 		String text = texte.toUpperCase();
 		for(int i = 0; i < keyWords.size(); i++)
 			keyWords.set(i, keyWords.get(i).toUpperCase());
@@ -143,15 +138,15 @@ public class Main {
 			if(charsList.indexOf(text.charAt(index)) > -1)
 			{	
 				if(commandBoard[charsList.indexOf(text.charAt(index))][eventPosition] == 0)
-					eventPosition = goToDefeat(defeatTable, events, keyWords, listKeyWordsIndex);
+					eventPosition = goToDefeat(defeatTable, events, keyWords, mapKeyWordsOccurences);
 				eventPosition = commandBoard[charsList.indexOf(text.charAt(index))][eventPosition]; 
 				String currentEvent;
 				if(eventPosition > 0 && keyWords.contains(currentEvent = events.get(eventPosition - 1))) {
-					wordFound(currentEvent, listKeyWordsIndex);
+					wordFound(currentEvent, mapKeyWordsOccurences);
 				}
 			}
 			else
-				eventPosition = goToDefeat(defeatTable, events, keyWords, listKeyWordsIndex);
+				eventPosition = goToDefeat(defeatTable, events, keyWords, mapKeyWordsOccurences);
 		}
 		
 
@@ -160,20 +155,20 @@ public class Main {
 		 * Ici on ajoute tous les mot-clefs contenus dans ceux trouves
 		 */
 		List<String> listKeyWordsToAdd = new ArrayList<String>();
-		Map<String, List<int[]>> temporaryListKeyWordsIndex = new LinkedHashMap<String, List<int[]>>();
+		Map<String, List<int[]>> temporaryMapKeyWordsOccurences = new HashMap<String, List<int[]>>();
 		
 		for(String keyWordToFind : keyWords) {
 			if(listKeyWordsToAdd.contains(keyWordToFind)) continue;
-			for(String keyWord : listKeyWordsIndex.keySet()) {
+			for(String keyWord : mapKeyWordsOccurences.keySet()) {
 				if(keyWord.length() > keyWordToFind.length() && keyWord.contains(keyWordToFind)) {
 					
-					if(!temporaryListKeyWordsIndex.containsKey(keyWordToFind))
-						temporaryListKeyWordsIndex.put(keyWordToFind, new ArrayList<int[]>());
-					for(int[] occurence : listKeyWordsIndex.get(keyWord)) {
+					if(!temporaryMapKeyWordsOccurences.containsKey(keyWordToFind))
+						temporaryMapKeyWordsOccurences.put(keyWordToFind, new ArrayList<int[]>());
+					for(int[] occurence : mapKeyWordsOccurences.get(keyWord)) {
 						int  newOccurence[] = new int[2];
 						newOccurence[0] = occurence[0]+keyWord.indexOf(keyWordToFind);
 						newOccurence[1] = newOccurence[0]+keyWordToFind.length();
-						temporaryListKeyWordsIndex.get(keyWordToFind).add(newOccurence);
+						temporaryMapKeyWordsOccurences.get(keyWordToFind).add(newOccurence);
 						count++;
 					}
 				}
@@ -181,14 +176,14 @@ public class Main {
 		}
 		
 		
-		for(String keyWord : temporaryListKeyWordsIndex.keySet()) {
-			if(!listKeyWordsIndex.containsKey(keyWord))
-				listKeyWordsIndex.put(keyWord, temporaryListKeyWordsIndex.get(keyWord));
+		for(String keyWord : temporaryMapKeyWordsOccurences.keySet()) {
+			if(!mapKeyWordsOccurences.containsKey(keyWord))
+				mapKeyWordsOccurences.put(keyWord, temporaryMapKeyWordsOccurences.get(keyWord));
 			else
-				listKeyWordsIndex.get(keyWord).addAll(temporaryListKeyWordsIndex.get(keyWord));
+				mapKeyWordsOccurences.get(keyWord).addAll(temporaryMapKeyWordsOccurences.get(keyWord));
 		}
 		
-		return listKeyWordsIndex;
+		return mapKeyWordsOccurences;
 	} //Search()
 	
 	/**
@@ -202,8 +197,7 @@ public class Main {
 			listKeyWordsIndex.put(currentEvent, new ArrayList<int[]>());
 		listKeyWordsIndex.get(currentEvent).add(new int[2]);
 		listKeyWordsIndex.get(currentEvent).get(listKeyWordsIndex.get(currentEvent).size()-1)[0] = index-currentEvent.length()+1;
-		listKeyWordsIndex.get(currentEvent).get(listKeyWordsIndex.get(currentEvent).size()-1)[1] = index;
-		
+		listKeyWordsIndex.get(currentEvent).get(listKeyWordsIndex.get(currentEvent).size()-1)[1] = index+1;
 		count++;
 	}
 	
@@ -250,7 +244,7 @@ public class Main {
 		
 		// LA SUITE
 		for(i = 0; i < events.size(); i++) {
-			for(int j = 0; j < events.size(); j++) {
+			for(int j = i+1; j < events.size(); j++) {
 				if(events.get(j).length() == events.get(i).length()+1
 						&& events.get(j).startsWith(events.get(i)))
 					commandBoard[charsList.indexOf(events.get(j).charAt(events.get(j).length()-1))][i+1] = j+1;
